@@ -10,8 +10,8 @@ COPY server.js ./
 
 ENV NODE_ENV=production
 ENV HOST=0.0.0.0
-ENV PORT=4173
+ENV PORT=7818
 
-EXPOSE 4173
+EXPOSE 7818
 
 CMD ["node", "server.js"]

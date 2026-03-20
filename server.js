@@ -4,7 +4,7 @@ const fs = require("fs");
 const path = require("path");
 
 const HOST = process.env.HOST || "127.0.0.1";
-const PORT = Number.parseInt(process.env.PORT || "4173", 10);
+const PORT = Number.parseInt(process.env.PORT || "7818", 10);
 const ROOT = __dirname;
 const ICON_CACHE_DIR = path.join(ROOT, ".icon-cache");
 const DATA_DIR = path.join(ROOT, "data");

@@ -27,7 +27,7 @@ npm start
 
 ```bash
 HOST=127.0.0.1
-PORT=4173
+PORT=7818
 ```
 
 Recommended for first deployment:
@@ -49,7 +49,7 @@ New accounts can then only be created by an admin from inside the site.
 6. In Baota site settings, reverse proxy your domain to:
 
 ```text
-http://127.0.0.1:4173
+http://127.0.0.1:7818
 ```
 
 7. Open:
@@ -73,9 +73,9 @@ Build and run:
 docker build -t zmnav .
 docker run -d \
   --name zmnav \
-  -p 4173:4173 \
+  -p 7818:7818 \
   -e HOST=0.0.0.0 \
-  -e PORT=4173 \
+  -e PORT=7818 \
   -e INIT_ADMIN_USERNAME=your_admin_name \
   -e INIT_ADMIN_PASSWORD=your_admin_password \
   -v $(pwd)/data/icon-cache:/app/.icon-cache \
@@ -87,7 +87,7 @@ docker run -d \
 Then open:
 
 ```text
-http://your-server-ip:4173
+http://your-server-ip:7818
 ```
 
 Or use compose:
@@ -101,7 +101,7 @@ docker compose up -d --build
 If you use Nginx or Baota reverse proxy, forward your domain to:
 
 ```text
-http://127.0.0.1:4173
+http://127.0.0.1:7818
 ```
 
 Recommended extras:

@@ -19,7 +19,7 @@ cp .env.example .env
 
 ```env
 HOST=0.0.0.0
-PORT=4173
+PORT=7818
 INIT_ADMIN_USERNAME=your_admin_name
 INIT_ADMIN_PASSWORD=your_admin_password
 ALLOW_PUBLIC_REGISTRATION=false
@@ -35,13 +35,13 @@ docker compose up -d --build
 
 ```bash
 docker compose ps
-curl http://127.0.0.1:4173/health
+curl http://127.0.0.1:7818/health
 ```
 
 ## 5. 访问
 
 ```text
-http://你的服务器IP:4173
+http://你的服务器IP:7818
 ```
 
 第一次就用 `.env` 里的管理员账号登录。
@@ -51,7 +51,7 @@ http://你的服务器IP:4173
 反代到：
 
 ```text
-http://127.0.0.1:4173
+http://127.0.0.1:7818
 ```
 
 然后开启 HTTPS。
