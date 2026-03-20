@@ -8,6 +8,9 @@
       name="description"
       content="一个高密度、双栏布局、支持账号登录、服务器存储和自动识别网站图标的现代导航页。"
     />
+    <script>
+      document.documentElement.classList.add("session-booting");
+    </script>
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
@@ -107,14 +110,14 @@
         <div class="auth-card panel">
           <div class="auth-brand">
             <div class="auth-avatar" aria-hidden="true">羽</div>
-            <h1 id="authHeading">登录导航页</h1>
-            <p id="authLead">登录后，导航数据直接保存在服务器，多端打开同一账号就是同一份数据。</p>
           </div>
 
           <div id="authTabs" class="auth-tabs" aria-label="账号操作">
             <button class="auth-tab is-active" type="button" data-auth-mode="login">登录</button>
             <button id="registerTabBtn" class="auth-tab" type="button" data-auth-mode="register">注册</button>
           </div>
+
+          <p id="authStatus" class="auth-status hidden"></p>
 
           <form id="authForm" class="auth-form" novalidate>
             <label class="field">
@@ -155,10 +158,10 @@
               />
             </label>
 
-            <button id="authSubmitBtn" class="button button-primary auth-submit" type="submit">登录并进入</button>
+            <button id="authSubmitBtn" class="button button-primary auth-submit" type="submit">登录</button>
           </form>
 
-          <p id="authTip" class="auth-tip">第一次使用就点注册，之后直接登录即可。</p>
+          <p id="authTip" class="auth-tip hidden"></p>
         </div>
       </section>
     </div>

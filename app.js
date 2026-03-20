@@ -85,8 +85,7 @@ const elements = {
   authTabs: document.querySelector("#authTabs"),
   registerTabBtn: document.querySelector("#registerTabBtn"),
   authForm: document.querySelector("#authForm"),
-  authHeading: document.querySelector("#authHeading"),
-  authLead: document.querySelector("#authLead"),
+  authStatus: document.querySelector("#authStatus"),
   authUsername: document.querySelector("#authUsername"),
   authPassword: document.querySelector("#authPassword"),
   authConfirmField: document.querySelector("#authConfirmField"),
@@ -293,7 +292,7 @@ function handleShortcuts(event) {
 }
 
 async function restoreSession() {
-  setAuthPending(true, "正在检查登录状态...");
+  setAuthPending(true);
 
   try {
     const { response, payload } = await fetchJson("/api/auth/session");
@@ -302,6 +301,7 @@ async function restoreSession() {
       state.user = payload.user;
       setAuthenticatedView(true);
       await loadState({ silent: true });
+      finishAuthBootstrap();
       return;
     }
   } catch (error) {
@@ -314,6 +314,7 @@ async function restoreSession() {
   clearRuntimeState();
   setAuthenticatedView(false);
   renderAuthMode();
+  finishAuthBootstrap();
 }
 
 async function fetchJson(url, options = {}) {
@@ -329,6 +330,10 @@ async function fetchJson(url, options = {}) {
 function setAuthenticatedView(isAuthenticated) {
   elements.appLayout.classList.toggle("hidden", !isAuthenticated);
   elements.authScreen.classList.toggle("hidden", isAuthenticated);
+}
+
+function finishAuthBootstrap() {
+  document.documentElement.classList.remove("session-booting");
 }
 
 function applyAuthConfig(config) {
@@ -359,31 +364,25 @@ function renderAuthMode() {
     button.classList.toggle("is-active", button.dataset.authMode === state.authMode);
   });
   elements.registerTabBtn.classList.toggle("hidden", !allowRegistration);
-  elements.authTabs.classList.toggle("single-tab", !allowRegistration);
-
-  if (state.authConfig.needsSetup) {
-    elements.authHeading.textContent = "等待管理员初始化";
-    elements.authLead.textContent =
-      "当前站点已关闭公开注册，且还没有管理员账号。请先在服务器环境变量里设置 INIT_ADMIN_USERNAME 和 INIT_ADMIN_PASSWORD 后重启服务。";
-  } else {
-    elements.authHeading.textContent = isRegister ? "注册你的导航账号" : "登录导航页";
-    elements.authLead.textContent = isRegister
-      ? "注册后就会创建你的专属导航数据，之后所有设备登录这个账号都会直接读取服务器上的内容。"
-      : "登录后，导航数据直接保存在服务器，多端打开同一账号就是同一份数据。";
-  }
+  elements.authTabs.classList.toggle("hidden", !allowRegistration);
   elements.authConfirmField.classList.toggle("hidden", !isRegister);
   elements.authConfirmPassword.disabled = !isRegister;
   elements.authPassword.autocomplete = isRegister ? "new-password" : "current-password";
-  elements.authSubmitBtn.textContent = isRegister ? "注册并进入" : "登录并进入";
+  elements.authSubmitBtn.textContent = isRegister ? "注册" : "登录";
+
+  let statusMessage = "";
+  let tipMessage = "";
+
   if (state.authConfig.needsSetup) {
-    elements.authTip.textContent = "管理员初始化完成后，这里就可以正常登录。";
-  } else if (!allowRegistration) {
-    elements.authTip.textContent = "当前站点已关闭公开注册，请联系管理员为你创建账号。";
-  } else {
-    elements.authTip.textContent = isRegister
-      ? "用户名和密码都由你自己定，注册成功后会自动登录。"
-      : "第一次使用就点注册，之后直接登录即可。";
+    statusMessage = "请先在服务器环境变量中设置管理员账号后再登录。";
+  } else if (isRegister) {
+    tipMessage = "注册后会自动进入导航页。";
   }
+
+  elements.authStatus.textContent = statusMessage;
+  elements.authStatus.classList.toggle("hidden", !statusMessage);
+  elements.authTip.textContent = tipMessage;
+  elements.authTip.classList.toggle("hidden", !tipMessage);
 }
 
 function handleAuthTabClick(event) {
@@ -395,7 +394,7 @@ function handleAuthTabClick(event) {
   setAuthMode(button.dataset.authMode);
 }
 
-function setAuthPending(pending, tipText = "") {
+function setAuthPending(pending) {
   const controls = [
     elements.authUsername,
     elements.authPassword,
@@ -412,16 +411,12 @@ function setAuthPending(pending, tipText = "") {
   });
 
   elements.authSubmitBtn.textContent = pending
-    ? "处理中..."
+    ? state.authMode === "register"
+      ? "注册中..."
+      : "登录中..."
     : state.authMode === "register"
-      ? "注册并进入"
-      : "登录并进入";
-
-  if (tipText) {
-    elements.authTip.textContent = tipText;
-  } else {
-    renderAuthMode();
-  }
+      ? "注册"
+      : "登录";
 }
 
 async function handleAuthSubmit(event) {
@@ -460,7 +455,7 @@ async function handleAuthSubmit(event) {
     return;
   }
 
-  setAuthPending(true, isRegister ? "正在创建账号..." : "正在登录...");
+  setAuthPending(true);
 
   try {
     const endpoint = isRegister ? "/api/auth/register" : "/api/auth/login";

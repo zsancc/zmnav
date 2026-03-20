@@ -115,6 +115,11 @@ kbd {
   min-height: 100vh;
 }
 
+.session-booting #authScreen,
+.session-booting #appLayout {
+  visibility: hidden;
+}
+
 .auth-screen {
   position: relative;
   z-index: 2;
@@ -125,15 +130,14 @@ kbd {
 }
 
 .auth-card {
-  width: min(480px, calc(100vw - 24px));
-  padding: 28px;
+  width: min(420px, calc(100vw - 24px));
+  padding: 24px 24px 22px;
 }
 
 .auth-brand {
   display: grid;
   justify-items: center;
-  gap: 14px;
-  text-align: center;
+  margin-bottom: 18px;
 }
 
 .auth-avatar {
@@ -153,24 +157,11 @@ kbd {
     inset 0 1px 0 rgba(255, 255, 255, 0.28);
 }
 
-.auth-brand h1 {
-  margin: 0;
-  font-size: 1.9rem;
-  color: var(--text-main);
-}
-
-.auth-brand p {
-  margin: 0;
-  max-width: 360px;
-  line-height: 1.7;
-  color: var(--text-muted);
-}
-
 .auth-tabs {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
-  margin-top: 24px;
+  margin-bottom: 14px;
 }
 
 .auth-tabs.single-tab {
@@ -195,15 +186,15 @@ kbd {
 .auth-form {
   display: grid;
   gap: 14px;
-  margin-top: 20px;
 }
 
 .auth-submit {
   margin-top: 4px;
 }
 
+.auth-status,
 .auth-tip {
-  margin: 16px 2px 0;
+  margin: 12px 2px 0;
   text-align: center;
   line-height: 1.6;
   color: var(--text-soft);
