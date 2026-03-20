@@ -1,72 +1,157 @@
-# Argon Nav
+# ZMNav
 
-一个高密度、双栏布局的现代导航页，支持：
+一个自用型导航页，支持：
 
-- 自己添加、编辑、删除网址
+- 登录后把数据直接存服务器
 - 自动识别并缓存网站图标
 - 分类管理、常用网址、站内搜索、网页搜索
-- 账号登录后直接把数据存到服务器
-- 多端登录同一账号共用同一份导航数据
-- 默认关闭公开注册，只允许管理员创建账号
-- 普通用户可自行修改密码
+- Docker 部署
 
-## 启动
+## 安装部署
 
-推荐直接运行 Node 服务：
+### 1. 先上传到 GitHub
 
-```bash
-node server.js
-```
-
-然后访问 [http://127.0.0.1:4173](http://127.0.0.1:4173)。
-
-如果你准备走 GitHub + Docker 的正式部署流程，直接看 [GITHUB_DEPLOY.md](/E:/code/zmnav/GITHUB_DEPLOY.md)。
-
-## 当前数据模型
-
-这版已经不是浏览器 `localStorage` 方案了，而是标准网站登录模型：
-
-- 用户先注册 / 登录
-- 浏览器只保存登录 cookie
-- 导航数据直接保存在服务器 `data/users` 目录
-- 同一账号在不同设备登录后会读取同一份数据
-
-默认策略：
-
-- 公开注册默认关闭
-- 管理员登录后可在设置里创建新账号
-- 普通用户只能登录、使用和修改自己的密码
-
-## 图标识别
-
-页面会优先通过本地 `/api/icon` 代理获取网站图标，并带缓存：
-
-1. 读取网站 HTML 中声明的 `rel="icon"` / `apple-touch-icon`
-2. 回退到站点根目录常见图标
-3. 再回退到公共 favicon 服务
-4. 如果都失败，显示统一默认图标
-
-图标缓存目录是：
+先在 GitHub 新建一个空仓库，比如：
 
 ```text
-.icon-cache
+https://github.com/YOUR_NAME/zmnav.git
+```
+
+然后在项目目录执行：
+
+```bash
+git add .
+git commit -m "feat: initial release"
+git branch -M main
+git remote add origin https://github.com/YOUR_NAME/zmnav.git
+git push -u origin main
+```
+
+如果你已经配过远端，后续更新只要：
+
+```bash
+git add .
+git commit -m "feat: update site"
+git push
+```
+
+### 2. 服务器克隆项目
+
+登录服务器后执行：
+
+```bash
+cd /opt
+git clone https://github.com/YOUR_NAME/zmnav.git
+cd zmnav
+```
+
+### 3. 配置环境变量
+
+先复制环境变量示例：
+
+```bash
+cp .env.example .env
+```
+
+编辑 `.env`：
+
+```env
+HOST=0.0.0.0
+PORT=4173
+INIT_ADMIN_USERNAME=your_admin_name
+INIT_ADMIN_PASSWORD=your_admin_password
+ALLOW_PUBLIC_REGISTRATION=false
+```
+
+说明：
+
+- `INIT_ADMIN_USERNAME` 和 `INIT_ADMIN_PASSWORD` 是首次部署管理员账号
+- `ALLOW_PUBLIC_REGISTRATION=false` 适合你自己用
+- 如果你以后想开放注册，再改成 `true`
+
+### 4. 启动 Docker
+
+在项目目录执行：
+
+```bash
+docker compose up -d --build
+```
+
+查看状态：
+
+```bash
+docker compose ps
+```
+
+查看日志：
+
+```bash
+docker compose logs -f
+```
+
+健康检查：
+
+```bash
+curl http://127.0.0.1:4173/health
+```
+
+返回 JSON 就说明服务启动成功。
+
+### 5. 浏览器访问
+
+先直接访问：
+
+```text
+http://你的服务器IP:4173
+```
+
+第一次就用 `.env` 里的管理员账号登录。
+
+### 6. 宝塔绑定域名
+
+如果你用宝塔，把域名反向代理到：
+
+```text
+http://127.0.0.1:4173
+```
+
+然后开启 HTTPS 就行。
+
+## 后续更新
+
+你本地改完并推到 GitHub 后，服务器执行：
+
+```bash
+cd /opt/zmnav
+git pull
+docker compose up -d --build
 ```
 
 ## 数据目录
 
-服务端数据默认保存在：
+数据会保存在项目目录：
 
-```text
-data/users
+- `data/users`
+- `.icon-cache`
+
+这两个目录已经挂载好了，重建容器也不会丢数据。
+
+## 本地开发
+
+如果只是本地临时运行：
+
+```bash
+npm start
 ```
 
-其中包括：
+然后打开：
 
-- 用户账号信息
-- 登录会话信息
-- 每个用户各自的导航数据
+```text
+http://127.0.0.1:4173
+```
 
-## 快捷键
+## 补充文档
 
-- `Ctrl/Cmd + K`：聚焦站内搜索
-- `Ctrl/Cmd + N`：打开添加网址弹窗
+更细一点的 GitHub 克隆部署说明见：
+
+- [GITHUB_DEPLOY.md](/E:/code/zmnav/GITHUB_DEPLOY.md)
