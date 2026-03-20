@@ -1,0 +1,16 @@
+services:
+  zmnav:
+    build: .
+    container_name: zmnav
+    restart: unless-stopped
+    ports:
+      - "${PORT:-4173}:${PORT:-4173}"
+    environment:
+      HOST: ${HOST:-0.0.0.0}
+      PORT: ${PORT:-4173}
+      INIT_ADMIN_USERNAME: ${INIT_ADMIN_USERNAME:-}
+      INIT_ADMIN_PASSWORD: ${INIT_ADMIN_PASSWORD:-}
+      ALLOW_PUBLIC_REGISTRATION: ${ALLOW_PUBLIC_REGISTRATION:-false}
+    volumes:
+      - ./data/icon-cache:/app/.icon-cache
+      - ./data/users:/app/data/users

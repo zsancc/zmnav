@@ -1,0 +1,5 @@
+.icon-cache/
+data/users/
+.tmp-auth-test.log
+.env
+.env.local

@@ -1,0 +1,13 @@
+{
+  "name": "zmnav",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A compact navigation page with local icon proxy support.",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node server.js"
+  }
+}

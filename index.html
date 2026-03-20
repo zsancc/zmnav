@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>逆羽导航页 | 导航页</title>
+    <meta
+      name="description"
+      content="一个高密度、双栏布局、支持账号登录、服务器存储和自动识别网站图标的现代导航页。"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <div class="ambient ambient-one"></div>
+      <div class="ambient ambient-two"></div>
+
+      <div id="appLayout" class="app-layout hidden">
+        <aside class="sidebar panel">
+          <div class="brand-block">
+            <div id="brandAvatar" class="brand-avatar" aria-hidden="true"></div>
+            <h1 id="siteHeading">高密度导航页</h1>
+            <p id="siteSubtitle" class="brand-subtitle">把常用网址放在眼前，打开更快一点。</p>
+          </div>
+
+          <label class="search-field" for="searchInput">
+            <span class="field-label">快速搜索</span>
+            <input
+              id="searchInput"
+              type="search"
+              placeholder="搜索名称、网址、分类"
+              autocomplete="off"
+            />
+          </label>
+
+          <div class="sidebar-actions">
+            <button id="addSiteBtn" class="button button-primary" type="button">添加网址</button>
+            <button id="settingsBtn" class="button button-secondary" type="button">设置</button>
+          </div>
+
+          <section class="sidebar-block">
+            <div class="block-head">
+              <div class="block-head-main">
+                <h2>分类</h2>
+                <span id="metricCategories" class="block-count">0</span>
+              </div>
+              <button id="manageCategoriesBtn" class="mini-action" type="button">管理</button>
+            </div>
+            <div id="categoryChips" class="category-list" aria-label="分类筛选"></div>
+          </section>
+
+        </aside>
+
+        <main class="content panel">
+          <form id="webSearchForm" class="web-search" role="search" autocomplete="off">
+            <div class="web-search-top">
+              <span class="web-search-label">搜索引擎</span>
+
+              <div id="webSearchEngines" class="web-search-engines" aria-label="搜索引擎">
+                <button class="engine-chip is-active" type="button" data-search-engine="baidu">百度</button>
+                <button class="engine-chip" type="button" data-search-engine="bing">Bing</button>
+                <button class="engine-chip" type="button" data-search-engine="google">Google</button>
+              </div>
+            </div>
+
+            <div class="web-search-input-wrap">
+              <input
+                id="webSearchInput"
+                name="q"
+                type="search"
+                placeholder="网页搜索：输入关键词回车"
+                aria-label="网页搜索关键词"
+              />
+              <button class="button button-primary web-search-submit" type="submit">搜索</button>
+            </div>
+          </form>
+
+          <header class="content-head">
+            <div>
+              <h2 id="resultTitle">常用网址</h2>
+              <p id="resultMeta">当前共 0 个网址</p>
+            </div>
+          </header>
+
+          <section id="siteGrid" class="site-grid" aria-live="polite"></section>
+
+          <section id="emptyState" class="empty-state hidden">
+            <div class="empty-icon">+</div>
+            <h2 id="emptyTitle">没有找到匹配的网址</h2>
+            <p id="emptyText">试试切换分类、清空搜索词，或者直接新增一个网址。</p>
+            <button id="emptyAddBtn" class="button button-primary" type="button">立即添加</button>
+          </section>
+
+          <footer id="contentFooter" class="content-footer hidden">
+            <a
+              id="footerIcpLink"
+              class="footer-icp"
+              href="https://beian.miit.gov.cn/"
+              target="_blank"
+              rel="noreferrer noopener"
+            ></a>
+          </footer>
+        </main>
+      </div>
+
+      <section id="authScreen" class="auth-screen">
+        <div class="auth-card panel">
+          <div class="auth-brand">
+            <div class="auth-avatar" aria-hidden="true">羽</div>
+            <h1 id="authHeading">登录导航页</h1>
+            <p id="authLead">登录后，导航数据直接保存在服务器，多端打开同一账号就是同一份数据。</p>
+          </div>
+
+          <div id="authTabs" class="auth-tabs" aria-label="账号操作">
+            <button class="auth-tab is-active" type="button" data-auth-mode="login">登录</button>
+            <button id="registerTabBtn" class="auth-tab" type="button" data-auth-mode="register">注册</button>
+          </div>
+
+          <form id="authForm" class="auth-form" novalidate>
+            <label class="field">
+              <span>用户名</span>
+              <input
+                id="authUsername"
+                name="username"
+                type="text"
+                maxlength="32"
+                placeholder="输入你的用户名"
+                autocomplete="username"
+                required
+              />
+            </label>
+
+            <label class="field">
+              <span>密码</span>
+              <input
+                id="authPassword"
+                name="password"
+                type="password"
+                maxlength="72"
+                placeholder="至少 6 位"
+                autocomplete="current-password"
+                required
+              />
+            </label>
+
+            <label id="authConfirmField" class="field hidden">
+              <span>确认密码</span>
+              <input
+                id="authConfirmPassword"
+                name="confirmPassword"
+                type="password"
+                maxlength="72"
+                placeholder="再输入一次密码"
+                autocomplete="new-password"
+              />
+            </label>
+
+            <button id="authSubmitBtn" class="button button-primary auth-submit" type="submit">登录并进入</button>
+          </form>
+
+          <p id="authTip" class="auth-tip">第一次使用就点注册，之后直接登录即可。</p>
+        </div>
+      </section>
+    </div>
+
+    <dialog id="siteDialog" class="site-dialog">
+      <form id="siteForm" class="site-form" method="dialog" novalidate>
+        <div class="dialog-head">
+          <div>
+            <span class="eyebrow">Collection Editor</span>
+            <h2 id="dialogTitle">添加网址</h2>
+          </div>
+          <button
+            id="closeDialogBtn"
+            class="icon-button"
+            type="button"
+            aria-label="关闭弹窗"
+          >
+            ×
+          </button>
+        </div>
+
+        <div class="preview-card">
+          <div class="preview-icon" id="previewIcon" aria-hidden="true"></div>
+          <div>
+            <strong id="previewTitle">站点名称预览</strong>
+            <span id="previewMeta">填写网址后再识别站点图标</span>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <label class="field">
+            <span>网址</span>
+            <input
+              id="siteUrl"
+              name="url"
+              type="url"
+              placeholder="例如 https://www.figma.com"
+              required
+            />
+          </label>
+
+          <label class="field">
+            <span>站点名称</span>
+            <input
+              id="siteName"
+              name="name"
+              type="text"
+              maxlength="40"
+              placeholder="留空时根据域名自动生成"
+            />
+          </label>
+
+          <label class="field">
+            <span>分类</span>
+            <input
+              id="siteCategory"
+              name="category"
+              type="text"
+              maxlength="24"
+              list="categorySuggestions"
+              placeholder="例如 开发 / 设计 / 工具"
+              required
+            />
+          </label>
+
+          <label class="toggle-field field-span" for="siteFavorite">
+            <input id="siteFavorite" name="isFavorite" type="checkbox" />
+            <div class="toggle-copy">
+              <strong>加入常用网址</strong>
+              <span>勾选后固定显示在常用页，点击 10 次以上也会自动加入。</span>
+            </div>
+          </label>
+
+          <label class="field field-span">
+            <span>简介</span>
+            <textarea
+              id="siteDescription"
+              name="description"
+              rows="3"
+              maxlength="90"
+              placeholder="这里可以写用途说明，紧凑模式下默认不展示。"
+            ></textarea>
+          </label>
+        </div>
+
+        <datalist id="categorySuggestions"></datalist>
+
+        <div class="dialog-actions">
+          <button id="cancelDialogBtn" class="button button-ghost" type="button">取消</button>
+          <button class="button button-primary" type="submit">保存网址</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="categoryDialog" class="site-dialog category-dialog">
+      <form id="categoryForm" class="site-form" method="dialog" novalidate>
+        <div class="dialog-head">
+          <div>
+            <span class="eyebrow">Category Manager</span>
+            <h2 id="categoryDialogTitle">管理分类</h2>
+          </div>
+          <button
+            id="closeCategoryDialogBtn"
+            class="icon-button"
+            type="button"
+            aria-label="关闭分类管理"
+          >
+            ×
+          </button>
+        </div>
+
+        <div class="category-editor">
+          <label class="field">
+            <span>分类名称</span>
+            <input
+              id="categoryNameInput"
+              name="categoryName"
+              type="text"
+              maxlength="24"
+              placeholder="输入分类名称"
+              required
+            />
+          </label>
+          <div class="dialog-actions category-editor-actions">
+            <button id="cancelCategoryEditBtn" class="button button-ghost" type="button">取消编辑</button>
+            <button id="saveCategoryBtn" class="button button-primary" type="submit">新增分类</button>
+          </div>
+        </div>
+
+        <div id="categoryManagerList" class="category-manager-list" aria-live="polite"></div>
+      </form>
+    </dialog>
+
+    <dialog id="settingsDialog" class="site-dialog settings-dialog">
+      <form id="settingsForm" class="site-form" method="dialog" novalidate>
+        <div class="dialog-head">
+          <div>
+            <span class="eyebrow">Settings</span>
+            <h2>导航设置</h2>
+          </div>
+          <button
+            id="closeSettingsDialogBtn"
+            class="icon-button"
+            type="button"
+            aria-label="关闭设置"
+          >
+            ×
+          </button>
+        </div>
+
+        <div class="settings-grid">
+          <label class="field field-span">
+            <span>站点标题</span>
+            <input
+              id="settingsSiteTitle"
+              name="siteTitle"
+              type="text"
+              maxlength="32"
+              placeholder="例如 我的导航页"
+              required
+            />
+          </label>
+
+          <label class="field field-span">
+            <span>副标题</span>
+            <input
+              id="settingsSiteSubtitle"
+              name="siteSubtitle"
+              type="text"
+              maxlength="60"
+              placeholder="例如 把常用网址放在眼前，打开更快一点。"
+            />
+          </label>
+
+          <label class="field field-span">
+            <span>头像图片 URL</span>
+            <input
+              id="settingsAvatarImage"
+              name="avatarImage"
+              type="url"
+              placeholder="https://images.example.com/avatar.jpg"
+            />
+          </label>
+
+          <label class="field field-span">
+            <span>备案号</span>
+            <input
+              id="settingsIcpCode"
+              name="icpCode"
+              type="text"
+              maxlength="40"
+              placeholder="例如 粤ICP备12345678号"
+            />
+          </label>
+
+          <label class="field">
+            <span>背景风格</span>
+            <select id="settingsBackgroundMode" name="backgroundMode">
+              <option value="argon">Argon 蓝</option>
+              <option value="mist">薄雾灰蓝</option>
+              <option value="sunset">落日暖色</option>
+              <option value="image">背景图片</option>
+            </select>
+          </label>
+
+          <label class="field field-span" id="settingsImageUrlField">
+            <span>背景图片 URL</span>
+            <input
+              id="settingsBackgroundImage"
+              name="backgroundImage"
+              type="url"
+              placeholder="https://images.example.com/bg.jpg"
+            />
+          </label>
+        </div>
+
+        <div class="settings-account">
+          <div class="settings-account-copy">
+            <span class="field-label">当前账号</span>
+            <div class="settings-account-line">
+              <strong id="settingsAccountName">未登录</strong>
+              <span id="settingsAccountRole" class="account-badge">普通用户</span>
+            </div>
+          </div>
+          <div class="settings-account-actions">
+            <button id="changePasswordBtn" class="button button-secondary" type="button">修改密码</button>
+            <button id="createUserBtn" class="button button-secondary hidden" type="button">创建账号</button>
+            <button id="logoutBtn" class="button button-ghost" type="button">退出登录</button>
+          </div>
+        </div>
+
+        <div class="settings-tools">
+          <button id="importBtn" class="button button-secondary" type="button">导入数据</button>
+          <button id="exportBtn" class="button button-secondary" type="button">导出数据</button>
+        </div>
+
+        <div class="dialog-actions">
+          <button id="cancelSettingsBtn" class="button button-ghost" type="button">取消</button>
+          <button class="button button-primary" type="submit">保存设置</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="passwordDialog" class="site-dialog account-dialog">
+      <form id="passwordForm" class="site-form" method="dialog" novalidate>
+        <div class="dialog-head">
+          <div>
+            <span class="eyebrow">Account</span>
+            <h2>修改密码</h2>
+          </div>
+          <button
+            id="closePasswordDialogBtn"
+            class="icon-button"
+            type="button"
+            aria-label="关闭修改密码"
+          >
+            ×
+          </button>
+        </div>
+
+        <div class="form-grid">
+          <label class="field field-span">
+            <span>当前密码</span>
+            <input
+              id="currentPassword"
+              name="currentPassword"
+              type="password"
+              maxlength="72"
+              autocomplete="current-password"
+              required
+            />
+          </label>
+
+          <label class="field field-span">
+            <span>新密码</span>
+            <input
+              id="newPassword"
+              name="newPassword"
+              type="password"
+              maxlength="72"
+              placeholder="至少 6 位"
+              autocomplete="new-password"
+              required
+            />
+          </label>
+
+          <label class="field field-span">
+            <span>确认新密码</span>
+            <input
+              id="confirmNewPassword"
+              name="confirmNewPassword"
+              type="password"
+              maxlength="72"
+              autocomplete="new-password"
+              required
+            />
+          </label>
+        </div>
+
+        <div class="dialog-actions">
+          <button id="cancelPasswordBtn" class="button button-ghost" type="button">取消</button>
+          <button id="savePasswordBtn" class="button button-primary" type="submit">保存新密码</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="createUserDialog" class="site-dialog account-dialog">
+      <form id="createUserForm" class="site-form" method="dialog" novalidate>
+        <div class="dialog-head">
+          <div>
+            <span class="eyebrow">Admin</span>
+            <h2>创建账号</h2>
+          </div>
+          <button
+            id="closeCreateUserDialogBtn"
+            class="icon-button"
+            type="button"
+            aria-label="关闭创建账号"
+          >
+            ×
+          </button>
+        </div>
+
+        <div class="form-grid">
+          <label class="field field-span">
+            <span>用户名</span>
+            <input
+              id="createUsername"
+              name="username"
+              type="text"
+              maxlength="32"
+              placeholder="输入新账号用户名"
+              autocomplete="off"
+              required
+            />
+          </label>
+
+          <label class="field field-span">
+            <span>初始密码</span>
+            <input
+              id="createPassword"
+              name="password"
+              type="password"
+              maxlength="72"
+              placeholder="至少 6 位"
+              autocomplete="new-password"
+              required
+            />
+          </label>
+
+          <label class="field field-span">
+            <span>确认密码</span>
+            <input
+              id="createConfirmPassword"
+              name="confirmPassword"
+              type="password"
+              maxlength="72"
+              autocomplete="new-password"
+              required
+            />
+          </label>
+        </div>
+
+        <div class="dialog-actions">
+          <button id="cancelCreateUserBtn" class="button button-ghost" type="button">取消</button>
+          <button id="saveCreateUserBtn" class="button button-primary" type="submit">创建账号</button>
+        </div>
+      </form>
+    </dialog>
+
+    <input id="importInput" type="file" accept="application/json" hidden />
+    <div id="toastRegion" class="toast-region" aria-live="polite" aria-atomic="true"></div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
